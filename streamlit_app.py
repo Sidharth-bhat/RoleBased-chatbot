@@ -6,7 +6,16 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'chatbot'))
 from chatbot.app import ChatbotRouter
 
 # Page config
-st.set_page_config(page_title="Role-Based Chatbot Demo", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="Role-Based Chatbot", page_icon="🤖", layout="wide", initial_sidebar_state="expanded")
+
+# Custom CSS for cleaner UI
+st.markdown("""
+<style>
+    .stButton button {
+        width: 100%;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Load users
 @st.cache_data
@@ -25,18 +34,15 @@ if 'messages' not in st.session_state:
 
 users = load_users()
 
-# Header
-st.title("🤖 Role-Based Chatbot System")
-st.markdown("**Enterprise-Grade Knowledge Isolation Demo**")
-
 # Sidebar - Authentication
 with st.sidebar:
-    st.header("🔐 User Login")
+    st.title("🔐 Access Portal")
     
     if not st.session_state.authenticated:
-        phone = st.text_input("Phone Number", placeholder="7564209312")
+        st.markdown("### Login")
+        phone = st.text_input("Phone Number", placeholder="e.g. 7564209312")
         
-        if st.button("Login", type="primary"):
+        if st.button("Login", type="primary", use_container_width=True):
             user = users.get(phone)
             if user:
                 st.session_state.phone = phone
@@ -46,70 +52,71 @@ with st.sidebar:
                 st.session_state.messages = []
                 st.rerun()
             else:
-                st.error("❌ User not found. Try: 7564209312")
+                st.error("User not found. Try: 7564209312")
         
-        st.divider()
-        st.subheader("📋 Test Users")
-        st.code("7564209312 - BUYER\n9105578047 - PARTNER\n6941460145 - SITE_VISIT\n6682751893 - UNKNOWN")
+        st.markdown("---")
+        with st.expander("📋 **Test Credentials**", expanded=True):
+            st.markdown("""
+            | Role | Phone |
+            |---|---|
+            | **Buyer** | `7564209312` |
+            | **Partner** | `9105578047` |
+            | **Visitor** | `6941460145` |
+            | **Unknown** | `6682751893` |
+            """)
     
     else:
-        st.success(f"✅ Logged in as **{st.session_state.user['name']}**")
-        st.info(f"**Role:** {st.session_state.user['role']}")
+        st.success(f"👤 **{st.session_state.user['name']}**")
+        st.caption(f"Role: **{st.session_state.user['role']}**")
         
-        if st.button("Logout"):
+        if st.button("Logout", type="secondary", use_container_width=True):
             st.session_state.authenticated = False
             st.session_state.messages = []
             st.rerun()
         
-        st.divider()
-        st.subheader("🧪 Test Queries")
+        st.markdown("---")
+        st.markdown("### 📊 Session Stats")
+        st.metric("Interactions", len(st.session_state.router.audit_log))
+        
+        st.markdown("### 💡 Suggested Queries")
         
         if st.session_state.user['role'] == 'BUYER':
-            st.markdown("**✅ Try:**\n- What is the price?\n- EMI options?\n\n**❌ Try (blocked):**\n- Commission structure?")
+            st.info("Try: Price, EMI, Availability")
+            st.error("Blocked: Commission, Partnership")
         elif st.session_state.user['role'] == 'CHANNEL_PARTNER':
-            st.markdown("**✅ Try:**\n- Commission rates?\n- Referral policy?\n\n**❌ Try (blocked):**\n- Apartment prices?")
+            st.info("Try: Commission, Referral policy")
+            st.error("Blocked: Apartment prices")
         elif st.session_state.user['role'] == 'SITE_VISIT':
-            st.markdown("**✅ Try:**\n- Where is location?\n- Visit timings?\n\n**❌ Try (blocked):**\n- Commission details?")
+            st.info("Try: Location, Visit timings")
+            st.error("Blocked: Commission details")
 
 # Main chat area
 if not st.session_state.authenticated:
-    st.info("👈 Please login with a phone number to start chatting")
+    st.title("🤖 Enterprise AI Assistant")
+    st.markdown("#### Secure, Role-Based Conversational Agent")
+    st.markdown("---")
     
     col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Total Users", len(users))
-    with col2:
-        st.metric("Roles", "4")
-    with col3:
-        st.metric("Guardrails", "Active")
+    col1.metric("Active Users", len(users))
+    col2.metric("Defined Roles", "4")
+    col3.metric("System Status", "🟢 Online")
     
-    st.divider()
-    st.subheader("🎯 System Features")
+    st.markdown("### System Architecture")
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("""
-        **✅ Security:**
-        - JWT-based authentication
-        - Physical KB isolation
-        - Output guardrails
-        - Audit logging
-        """)
+        st.info("**🛡️ Security Layer**\n\n- JWT-based stateless authentication\n- Physical Knowledge Base isolation\n- Output guardrails & sanitization")
     with col2:
-        st.markdown("""
-        **✅ Architecture:**
-        - Multi-agent system
-        - Network-level routing
-        - Zero cross-role leakage
-        - Fallback handling
-        """)
+        st.success("**🧠 Intelligence Layer**\n\n- Deterministic routing strategy\n- Role-specific context injection\n- Audit logging for compliance")
 
 else:
+    st.title("💬 Secure Chat Interface")
+    
     # Display chat messages
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
             if msg.get("guardrail"):
-                st.warning("🛡️ Guardrail triggered - Cross-role data blocked")
+                st.warning("🛡️ **Guardrail Triggered**: Cross-role data access blocked.")
     
     # Chat input
     if prompt := st.chat_input("Ask a question..."):
@@ -131,17 +138,6 @@ else:
         with st.chat_message("assistant"):
             st.markdown(response)
             if guardrail_triggered:
-                st.warning("🛡️ Guardrail triggered - Cross-role data blocked")
+                st.warning("🛡️ **Guardrail Triggered**: Cross-role data access blocked.")
         
         st.rerun()
-
-# Footer
-st.divider()
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric("Interactions", len(st.session_state.router.audit_log))
-with col2:
-    if st.session_state.authenticated:
-        st.metric("Current Role", st.session_state.user['role'])
-with col3:
-    st.metric("Status", "🟢 Active")

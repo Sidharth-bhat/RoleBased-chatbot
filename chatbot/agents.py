@@ -18,20 +18,34 @@ class KnowledgeBase:
     
     def search(self, query: str) -> List[Dict]:
         """Simple keyword-based search"""
-        query_lower = query.lower()
+        # Remove punctuation and convert to lower case
+        query_clean = re.sub(r'[^\w\s]', '', query.lower())
+        query_tokens = query_clean.split()
+        
+        # Filter significant words (len > 3)
+        significant_words = [w for w in query_tokens if len(w) > 3]
+        
         results = []
         
         # Search for matching topics
         for item in self.knowledge:
-            topic_words = item['topic'].lower().split()
-            if any(word in query_lower for word in topic_words):
+            topic_lower = item['topic'].lower()
+            
+            # 1. Exact word match for topic in query
+            if re.search(r'\b' + re.escape(topic_lower) + r'\b', query_clean):
                 results.append(item)
+                continue
+                
+            # 2. Partial match: significant query word inside topic (e.g. "price" in "pricing")
+            if any(word in topic_lower for word in significant_words):
+                results.append(item)
+                continue
         
         # If no match, search in content
-        if not results:
+        if not results and significant_words:
             for item in self.knowledge:
-                content_words = item['content'].lower().split()
-                if any(word in query_lower for word in content_words[:10]):  # Check first 10 words
+                content_lower = item['content'].lower()
+                if any(word in content_lower for word in significant_words):
                     results.append(item)
         
         return results if results else []
@@ -79,7 +93,8 @@ class Agent:
     def _generate_deterministic(self, context: List[Dict]) -> str:
         """Simulates LLM generation using static templates"""
         if not context:
-            return f"I'm a specialized assistant for {self.role.replace('_', ' ').lower()}s. I can help you with relevant information. Please ask about topics related to my role."
+            return f"I apologize, but I don't have access to that information. As a {self.role.replace('_', ' ').title()}, I can only assist you with topics relevant to your role.If any query please contact adminstator@edu"
+            return f"I apologize, but I don't have access to that information. As a {self.role.replace('_', ' ').title()}, I can only assist you with topics relevant to your role. If you have any queries, please contact administrator@edu."
         
         response = ""
         for item in context:

@@ -32,7 +32,7 @@ def main():
     
     # Load leads
     # Using the file provided in context
-    df = pd.read_csv('data/classified_leads.csv') 
+    df = pd.read_csv('data/leads_1000.csv') 
     
     # Apply classification
     df['Role'] = df['Buyer/Channel Partner/Enquiry/Site Visit'].apply(
