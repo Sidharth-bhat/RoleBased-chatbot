@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Architecture Diagram</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --border: #1e2330;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --line: #1e2330;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  header .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  header h1 {
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #e2e8f0 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── DIAGRAM LAYOUT ── */
+  .diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── NODE ── */
+  .node {
+    width: 100%;
+    max-width: 640px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 24px;
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .node:hover {
+    box-shadow: 0 0 28px rgba(0,229,255,0.08);
+    border-color: rgba(0,229,255,0.25);
+  }
+
+  .node-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .node-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .node-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .node-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  /* Color variants */
+  .node-user      { border-left: 3px solid var(--accent); }
+  .node-idp       { border-left: 3px solid var(--accent2); }
+  .node-gateway   { border-left: 3px solid var(--accent4); }
+  .node-output    { border-left: 3px solid var(--accent3); }
+  .node-audit     { border-left: 3px solid var(--accent5); }
+
+  .badge-user    { background: rgba(0,229,255,0.12); color: var(--accent); }
+  .badge-idp     { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .badge-gw      { background: rgba(245,158,11,0.15); color: var(--accent4); }
+  .badge-agent   { background: rgba(16,185,129,0.12); color: var(--accent3); }
+  .badge-output  { background: rgba(16,185,129,0.12); color: var(--accent3); }
+  .badge-audit   { background: rgba(239,68,68,0.12); color: var(--accent5); }
+
+  /* ── ARROWS ── */
+  .arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 0;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .arrow-line {
+    width: 2px;
+    height: 28px;
+    background: linear-gradient(to bottom, var(--border), var(--accent));
+    position: relative;
+  }
+
+  .arrow-head {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--accent);
+  }
+
+  .arrow-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+    padding: 1px 8px;
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 4px;
+    margin-bottom: 2px;
+  }
+
+  /* ── ROUTER FAN ── */
+  .router-section {
+    width: 100%;
+    max-width: 900px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .router-line {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+  }
+
+  .router-stem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+  }
+
+  .router-stem-line {
+    width: 2px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--accent4), rgba(0,229,255,0.4));
+  }
+
+  .router-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .agent-node {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    width: 100%;
+    min-width: 0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+
+  .agent-node:hover {
+    border-color: rgba(0,229,255,0.3);
+    box-shadow: 0 0 20px rgba(0,229,255,0.07);
+  }
+
+  .agent-node .a-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 3px;
+    white-space: nowrap;
+  }
+
+  .agent-node .a-db {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--muted);
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border);
+  }
+
+  /* Individual agent colors */
+  .agent-buyer   { border-left: 3px solid var(--accent); }
+  .agent-buyer .a-title { color: var(--accent); }
+  .agent-partner { border-left: 3px solid var(--accent2); }
+  .agent-partner .a-title { color: #a78bfa; }
+  .agent-visitor { border-left: 3px solid var(--accent3); }
+  .agent-visitor .a-title { color: var(--accent3); }
+  .agent-fallback { border-left: 3px solid var(--accent5); opacity: 0.7; }
+  .agent-fallback .a-title { color: var(--accent5); }
+
+  .agents-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .agent-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .converge-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    padding: 4px 0;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .converge-line {
+    width: 70%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(0,229,255,0.5), transparent);
+    margin-bottom: 2px;
+  }
+
+  .converge-down {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .converge-stem {
+    width: 2px;
+    height: 28px;
+    background: linear-gradient(to bottom, rgba(0,229,255,0.5), var(--accent));
+  }
+
+  .cross-mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent5);
+    margin-top: 4px;
+    padding: 2px 6px;
+    border: 1px dashed rgba(239,68,68,0.4);
+    border-radius: 4px;
+  }
+
+  /* Animation delays */
+  .node:nth-child(1)  { animation-delay: 0.05s; }
+  .arrow:nth-child(2) { animation-delay: 0.10s; }
+  .node:nth-child(3)  { animation-delay: 0.15s; }
+  .arrow:nth-child(4) { animation-delay: 0.20s; }
+  .node:nth-child(5)  { animation-delay: 0.25s; }
+  .router-section     { animation-delay: 0.30s; }
+  .agents-row         { animation-delay: 0.35s; }
+  .converge-arrow     { animation-delay: 0.40s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Pulse dots */
+  .pulse-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(0,229,255,0.4); }
+    50% { opacity: 0.7; transform: scale(1.2); box-shadow: 0 0 0 6px rgba(0,229,255,0); }
+  }
+
+  /* Legend */
+  .legend {
+    margin-top: 48px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+    animation: fadeUp 0.5s 0.6s ease both;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .legend-title {
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* Step numbers */
+  .step-num {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--bg);
+    padding: 0 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="eyebrow">// System Architecture</div>
+    <h1>Role-Based AI Chat Platform</h1>
+  </header>
+
+  <div class="diagram">
+
+    <!-- 1. User Chat Interface -->
+    <div class="node node-user" style="animation-delay:0.05s">
+      <div class="step-num">ENTRY</div>
+      <div class="node-label">Layer 01 · Client</div>
+      <div class="node-title"><span class="pulse-dot"></span>User Chat Interface</div>
+      <div class="node-desc">Web or mobile frontend. User initiates session and authenticates.</div>
+      <span class="node-badge badge-user">Web / Mobile</span>
+    </div>
+
+    <div class="arrow" style="animation-delay:0.10s">
+      <div class="arrow-label">① Authenticate & Request Token</div>
+      <div class="arrow-line"></div>
+      <div class="arrow-head"></div>
+    </div>
+
+    <!-- 2. Identity Provider -->
+    <div class="node node-idp" style="animation-delay:0.15s">
+      <div class="step-num">STEP 1</div>
+      <div class="node-label">Layer 02 · Auth</div>
+      <div class="node-title">Identity Provider <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);">(JWT Generator)</span></div>
+      <div class="node-desc">Validates credentials and issues signed JWT token with role and expiry.</div>
+      <span class="node-badge badge-idp" style="font-size:11px">{ "role": "BUYER" | "PARTNER" | "VISITOR",  "exp": "24h" }</span>
+    </div>
+
+    <div class="arrow" style="animation-delay:0.20s">
+      <div class="arrow-label">② Pass Token with Queries</div>
+      <div class="arrow-line"></div>
+      <div class="arrow-head"></div>
+    </div>
+
+    <!-- 3. API Gateway -->
+    <div class="node node-gateway" style="animation-delay:0.25s">
+      <div class="step-num">STEP 2</div>
+      <div class="node-label">Layer 03 · Routing</div>
+      <div class="node-title">API Gateway · Hard Router</div>
+      <div class="node-desc">Reads JWT role claim and routes traffic deterministically. <strong style="color:var(--accent4)">No AI involved</strong> at this layer.</div>
+      <span class="node-badge badge-gw">Deterministic · JWT-Driven</span>
+    </div>
+
+  </div><!-- /diagram top -->
+
+  <!-- Agent fan-out -->
+  <div style="display:flex; flex-direction:column; align-items:center; gap:0; animation: fadeUp 0.5s 0.30s ease both;">
+
+    <!-- 4 stems down -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; width:100%; max-width:900px; padding:0 0;">
+      <div class="agent-col">
+        <div style="width:2px;height:32px;background:linear-gradient(to bottom,rgba(0,229,255,0.5),var(--accent));"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:4px;">[If BUYER]</div>
+      </div>
+      <div class="agent-col">
+        <div style="width:2px;height:32px;background:linear-gradient(to bottom,rgba(124,58,237,0.5),#a78bfa);"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#a78bfa;margin-bottom:4px;">[If PARTNER]</div>
+      </div>
+      <div class="agent-col">
+        <div style="width:2px;height:32px;background:linear-gradient(to bottom,rgba(16,185,129,0.5),var(--accent3));"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent3);margin-bottom:4px;">[If VISITOR]</div>
+      </div>
+      <div class="agent-col">
+        <div style="width:2px;height:32px;background:linear-gradient(to bottom,rgba(239,68,68,0.5),var(--accent5));"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent5);margin-bottom:4px;">[If UNKNOWN]</div>
+      </div>
+    </div>
+
+    <!-- Agent nodes -->
+    <div class="agents-row" style="animation-delay:0.35s;">
+      <div class="agent-node agent-buyer">
+        <div class="a-title">Buyer Agent</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">Handles pricing, orders, purchase queries</div>
+        <div class="a-db">🗄 Buyer DB<br><span style="font-size:9px">(Pricing Data)</span></div>
+      </div>
+      <div class="agent-node agent-partner">
+        <div class="a-title">Partner Agent</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">Handles commissions, affiliate queries</div>
+        <div class="a-db">🗄 Partner DB<br><span style="font-size:9px">(Commission Data)</span></div>
+      </div>
+      <div class="agent-node agent-visitor">
+        <div class="a-title">Visitor Agent</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">Handles public info, location queries</div>
+        <div class="a-db">🗄 Visitor DB<br><span style="font-size:9px">(Location Data)</span></div>
+      </div>
+      <div class="agent-node agent-fallback">
+        <div class="a-title">Fallback Agent</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">Prompts user to self-identify</div>
+        <div class="a-db" style="color:var(--accent5)">✕ No DB Access</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Converge arrow -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:900px;margin:0 auto;animation:fadeUp 0.5s 0.4s ease both;">
+    <div style="display:flex;justify-content:center;width:100%;margin-top:8px;">
+      <div style="width:75%;height:2px;background:linear-gradient(to right, transparent, rgba(0,229,255,0.35) 30%, rgba(0,229,255,0.35) 70%, transparent);"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);margin:4px 0 2px;background:var(--bg);padding:1px 8px;border:1px solid rgba(0,229,255,0.2);border-radius:4px;">③ Generated Output</div>
+      <div style="width:2px;height:28px;background:linear-gradient(to bottom,var(--accent),rgba(0,229,255,0.5));"></div>
+      <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--accent);"></div>
+    </div>
+  </div>
+
+  <div class="diagram" style="margin-top:0;">
+
+    <!-- Output Guardrail -->
+    <div class="node node-output" style="animation-delay:0.45s">
+      <div class="step-num">STEP 3</div>
+      <div class="node-label">Layer 04 · Safety</div>
+      <div class="node-title">Output Guardrail Evaluator</div>
+      <div class="node-desc">Applies regex/keyword rules to filter sensitive data before delivery. E.g., blocks <span style="color:var(--accent5);font-family:'JetBrains Mono',monospace;font-size:11px">"Commission"</span> fields from Buyer responses.</div>
+      <span class="node-badge badge-output">Regex · Keyword Filtering</span>
+    </div>
+
+    <div class="arrow" style="animation-delay:0.50s">
+      <div class="arrow-label">④ Safe Response to User</div>
+      <div class="arrow-line"></div>
+      <div class="arrow-head"></div>
+    </div>
+
+    <!-- Audit Log -->
+    <div class="node node-audit" style="animation-delay:0.55s">
+      <div class="step-num">STEP 4</div>
+      <div class="node-label">Layer 05 · Compliance</div>
+      <div class="node-title">Immutable Audit Logging</div>
+      <div class="node-desc">Every interaction is write-once logged with: timestamp · user ID · role · prompt · system action.</div>
+      <span class="node-badge badge-audit">Immutable · Write-Once</span>
+    </div>
+
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-title">// Component Legend</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Client / Interface</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>Auth / Identity</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent4)"></div>API Gateway</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Buyer Agent</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>Partner Agent</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent3)"></div>Visitor Agent</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent5)"></div>Fallback Agent / Audit</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent3)"></div>Guardrail / Output</div>
+  </div>
+
+</div>
+</body>
+</html>

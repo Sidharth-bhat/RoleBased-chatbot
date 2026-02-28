@@ -1,0 +1,25 @@
+{
+  "role": "BUYER",
+  "knowledge": [
+    {
+      "topic": "pricing",
+      "content": "Our premium apartments start at ₹45 lakhs for 2BHK and ₹75 lakhs for 3BHK. Prices include basic amenities and parking."
+    },
+    {
+      "topic": "emi",
+      "content": "EMI options available starting at ₹35,000/month for 20 years at 8.5% interest. We partner with all major banks for home loans."
+    },
+    {
+      "topic": "booking",
+      "content": "Booking process: 1) Pay token amount ₹1 lakh, 2) Complete documentation, 3) Pay 20% within 30 days, 4) Balance on possession."
+    },
+    {
+      "topic": "availability",
+      "content": "Currently 45 units available across towers A and B. Possession scheduled for December 2025. East and north-facing units available."
+    },
+    {
+      "topic": "amenities",
+      "content": "Amenities include swimming pool, gym, children's play area, clubhouse, 24/7 security, power backup, and landscaped gardens."
+    }
+  ]
+}

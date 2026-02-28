@@ -1,0 +1,30 @@
+# Documentation files (for submission only)
+PART1_SUBMISSION.md
+PART2_SUBMISSION.md
+SOLUTION_EXPLANATION.md
+SUBMISSION.md
+DEPLOYMENT.md
+
+# Assignment files
+Internship Assignment (1).pdf
+solutiondraft.docx
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,25 @@
+{
+  "role": "CHANNEL_PARTNER",
+  "knowledge": [
+    {
+      "topic": "commission",
+      "content": "Commission structure: 2% on bookings up to ₹50L, 2.5% on ₹50L-₹1Cr, 3% above ₹1Cr. Paid within 15 days of booking confirmation."
+    },
+    {
+      "topic": "partnership",
+      "content": "Partnership terms: Minimum 5 deals per quarter to maintain active status. Exclusive territory rights available for top performers."
+    },
+    {
+      "topic": "registration",
+      "content": "Registration process: Submit RERA certificate, PAN, GST, and bank details. Approval within 48 hours. Digital onboarding available."
+    },
+    {
+      "topic": "referral",
+      "content": "Referral policy: Earn 0.5% on secondary referrals. Partner portal provides real-time tracking of leads and commission status."
+    },
+    {
+      "topic": "incentives",
+      "content": "Quarterly incentives: ₹50K bonus for 10+ deals, ₹1L for 20+ deals. Annual top performer gets international trip and 0.5% extra commission."
+    }
+  ]
+}

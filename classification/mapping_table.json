@@ -1,0 +1,12 @@
+{
+  "mapping_rules": {
+    "Buyer": "BUYER",
+    "Buyer_Line": "BUYER",
+    "Channel Partner": "CHANNEL_PARTNER",
+    "Partner_Line": "CHANNEL_PARTNER",
+    "Site Visit": "SITE_VISIT",
+    "Visit_Line": "SITE_VISIT",
+    "Enquiry": "UNKNOWN"
+  },
+  "default_role": "UNKNOWN"
+}

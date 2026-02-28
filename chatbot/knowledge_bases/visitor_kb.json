@@ -1,0 +1,25 @@
+{
+  "role": "SITE_VISIT",
+  "knowledge": [
+    {
+      "topic": "location",
+      "content": "Project location: Sector 45, Whitefield, Bangalore. 2km from ITPL, 15 mins from Whitefield Metro Station. Google Maps: bit.ly/project-location"
+    },
+    {
+      "topic": "scheduling",
+      "content": "Site visits available Monday-Sunday, 9 AM to 6 PM. Guided tours every hour. Average visit duration: 45 minutes. Book 24 hours in advance."
+    },
+    {
+      "topic": "timeslots",
+      "content": "Available slots: 9 AM, 10 AM, 11 AM, 12 PM, 2 PM, 3 PM, 4 PM, 5 PM. Weekends get booked fast, recommend weekday visits."
+    },
+    {
+      "topic": "contact",
+      "content": "Site visit coordinator: Rajesh Kumar, Phone: +91-9876543210. For directions or queries, call between 9 AM - 6 PM."
+    },
+    {
+      "topic": "directions",
+      "content": "From Whitefield Metro: Take bus 500D or auto (₹80). By car: Take Old Madras Road, turn at ITPL signal. Free parking available at site."
+    }
+  ]
+}
