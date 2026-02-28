@@ -1,3 +1,4 @@
 pandas
 PyJWT
 streamlit
+altair<5
