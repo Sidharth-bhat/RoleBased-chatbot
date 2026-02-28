@@ -1,14 +1,20 @@
 import json
 import re
+import os
 from typing import List, Dict
 
 class KnowledgeBase:
     """Isolated knowledge base for each role"""
     def __init__(self, kb_path: str):
-        with open(kb_path, 'r') as f:
-            data = json.load(f)
-        self.role = data['role']
-        self.knowledge = data['knowledge']
+        try:
+            with open(kb_path, 'r') as f:
+                data = json.load(f)
+            self.role = data.get('role', 'UNKNOWN')
+            self.knowledge = data.get('knowledge', [])
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Warning: Could not load KB at {kb_path}: {e}")
+            self.role = "UNKNOWN"
+            self.knowledge = []
     
     def search(self, query: str) -> List[Dict]:
         """Simple keyword-based search"""
@@ -56,22 +62,29 @@ class Agent:
     
     def respond(self, query: str) -> str:
         """Generate response with guardrails"""
-        # Retrieve context from isolated KB
+        # 1. Retrieve context (RAG Pattern - Retrieval)
         context = self.kb.search(query)
         
-        # Generate response (simplified - in production use LLM)
-        if not context:
-            response = f"I'm a specialized assistant for {self.role.replace('_', ' ').lower()}s. I can help you with relevant information. Please ask about topics related to my role."
-        else:
-            response = ""
-            for item in context:
-                response += f"**{item['topic'].title()}**: {item['content']}\n\n"
+        # 2. Generate response (RAG Pattern - Generation)
+        # Currently using deterministic logic. In production, replace _generate_deterministic 
+        # with an LLM call (e.g., OpenAI GPT-4) passing the context and system_prompt.
+        response = self._generate_deterministic(context)
         
-        # Apply guardrails
+        # 3. Apply guardrails (Safety)
         if not self._check_guardrails(response):
             return "I cannot provide that information. Please contact a human representative."
         
         return response.strip()
+
+    def _generate_deterministic(self, context: List[Dict]) -> str:
+        """Simulates LLM generation using static templates"""
+        if not context:
+            return f"I'm a specialized assistant for {self.role.replace('_', ' ').lower()}s. I can help you with relevant information. Please ask about topics related to my role."
+        
+        response = ""
+        for item in context:
+            response += f"**{item['topic'].title()}**: {item['content']}\n\n"
+        return response
 
 class BuyerAgent(Agent):
     def __init__(self):

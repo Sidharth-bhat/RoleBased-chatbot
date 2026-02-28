@@ -6,7 +6,7 @@ import os
 sys.path.insert(0, os.path.dirname(__file__))
 from agents import BuyerAgent, PartnerAgent, VisitorAgent, FallbackAgent
 
-SECRET_KEY = "your-secret-key-change-in-production"
+SECRET_KEY = os.getenv("CHATBOT_SECRET_KEY", "dev-secret-key-change-in-production")
 
 class ChatbotRouter:
     """API Gateway - Deterministic routing based on JWT"""

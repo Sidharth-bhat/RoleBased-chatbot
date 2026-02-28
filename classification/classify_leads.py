@@ -19,15 +19,20 @@ def classify_lead(source_value, mapping_rules, default_role):
     return mapping_rules.get(cleaned, default_role)
 
 def main():
-    # Load mapping table
-    with open('classification/mapping_table.json', 'r') as f:
-        config = json.load(f)
-    
-    mapping_rules = config['mapping_rules']
-    default_role = config['default_role']
+    # Define mapping rules directly for standalone execution
+    mapping_rules = {
+        "Buyer_Line": "BUYER",
+        "Partner_Line": "CHANNEL_PARTNER",
+        "Visit_Line": "SITE_VISIT",
+        "Buyer": "BUYER",
+        "Channel Partner": "CHANNEL_PARTNER",
+        "Site Visit": "SITE_VISIT"
+    }
+    default_role = "UNKNOWN"
     
     # Load leads
-    df = pd.read_csv('data/leads_1000.csv')
+    # Using the file provided in context
+    df = pd.read_csv('data/classified_leads.csv') 
     
     # Apply classification
     df['Role'] = df['Buyer/Channel Partner/Enquiry/Site Visit'].apply(
