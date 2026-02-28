@@ -14,10 +14,21 @@ class KnowledgeBase:
         """Simple keyword-based search"""
         query_lower = query.lower()
         results = []
+        
+        # Search for matching topics
         for item in self.knowledge:
-            if any(word in query_lower for word in item['topic'].split()):
+            topic_words = item['topic'].lower().split()
+            if any(word in query_lower for word in topic_words):
                 results.append(item)
-        return results if results else self.knowledge[:2]
+        
+        # If no match, search in content
+        if not results:
+            for item in self.knowledge:
+                content_words = item['content'].lower().split()
+                if any(word in query_lower for word in content_words[:10]):  # Check first 10 words
+                    results.append(item)
+        
+        return results if results else []
 
 class Agent:
     """Specialized agent with isolated knowledge access"""
@@ -50,9 +61,9 @@ class Agent:
         
         # Generate response (simplified - in production use LLM)
         if not context:
-            response = "I can only help with information specific to your role. Please ask relevant questions."
+            response = f"I'm a specialized assistant for {self.role.replace('_', ' ').lower()}s. I can help you with relevant information. Please ask about topics related to my role."
         else:
-            response = f"{self.system_prompt}\n\n"
+            response = ""
             for item in context:
                 response += f"**{item['topic'].title()}**: {item['content']}\n\n"
         
@@ -60,7 +71,7 @@ class Agent:
         if not self._check_guardrails(response):
             return "I cannot provide that information. Please contact a human representative."
         
-        return response
+        return response.strip()
 
 class BuyerAgent(Agent):
     def __init__(self):
