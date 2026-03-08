@@ -1,4 +1,7 @@
 pandas
 PyJWT
-streamlit
-altair<5
+flask
+flask-cors
+sentence-transformers
+torch
+pytest

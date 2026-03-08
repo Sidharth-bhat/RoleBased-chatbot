@@ -1,0 +1,26 @@
+{"id": 1, "timestamp": "2026-03-08T07:24:56.997364+00:00", "user_id": "7564209312", "role": "BUYER", "query": "What is the price?", "response_length": 411, "guardrail_triggered": false}
+{"id": 2, "timestamp": "2026-03-08T07:24:57.006749+00:00", "user_id": "7564209312", "role": "BUYER", "query": "What is the commission rate?", "response_length": 141, "guardrail_triggered": true}
+{"id": 3, "timestamp": "2026-03-08T07:24:57.016435+00:00", "user_id": "7564209312", "role": "BUYER", "query": "Tell me about referral incentives", "response_length": 141, "guardrail_triggered": true}
+{"id": 4, "timestamp": "2026-03-08T07:24:57.035683+00:00", "user_id": "9105578047", "role": "CHANNEL_PARTNER", "query": "What is my commission structure?", "response_length": 434, "guardrail_triggered": false}
+{"id": 5, "timestamp": "2026-03-08T07:24:57.054593+00:00", "user_id": "9105578047", "role": "CHANNEL_PARTNER", "query": "What is the apartment price?", "response_length": 195, "guardrail_triggered": false}
+{"id": 6, "timestamp": "2026-03-08T07:24:57.075592+00:00", "user_id": "9105578047", "role": "CHANNEL_PARTNER", "query": "Tell me about EMI options", "response_length": 151, "guardrail_triggered": true}
+{"id": 7, "timestamp": "2026-03-08T07:24:57.092388+00:00", "user_id": "6941460145", "role": "SITE_VISIT", "query": "Where is the project located?", "response_length": 284, "guardrail_triggered": false}
+{"id": 8, "timestamp": "2026-03-08T07:24:57.101153+00:00", "user_id": "6941460145", "role": "SITE_VISIT", "query": "What is the commission?", "response_length": 146, "guardrail_triggered": true}
+{"id": 9, "timestamp": "2026-03-08T07:24:57.109687+00:00", "user_id": "6682751893", "role": "UNKNOWN", "query": "I need help", "response_length": 267, "guardrail_triggered": false}
+{"id": 10, "timestamp": "2026-03-08T07:24:57.137006+00:00", "user_id": "7564209312", "role": "BUYER", "query": "What is the price?", "response_length": 411, "guardrail_triggered": false}
+{"id": 11, "timestamp": "2026-03-08T07:24:57.162849+00:00", "user_id": "7564209312", "role": "BUYER", "query": "EMI options?", "response_length": 135, "guardrail_triggered": false}
+{"id": 12, "timestamp": "2026-03-08T07:58:30.642738+00:00", "user_id": "7564209312", "role": "BUYER", "query": "What is the price?", "response_length": 411, "guardrail_triggered": false}
+{"id": 13, "timestamp": "2026-03-08T07:58:30.669209+00:00", "user_id": "7564209312", "role": "BUYER", "query": "What is the commission rate?", "response_length": 141, "guardrail_triggered": true}
+{"id": 14, "timestamp": "2026-03-08T07:58:30.703408+00:00", "user_id": "7564209312", "role": "BUYER", "query": "Tell me about referral incentives", "response_length": 141, "guardrail_triggered": true}
+{"id": 15, "timestamp": "2026-03-08T07:58:30.826015+00:00", "user_id": "9105578047", "role": "CHANNEL_PARTNER", "query": "What is my commission structure?", "response_length": 434, "guardrail_triggered": false}
+{"id": 16, "timestamp": "2026-03-08T07:58:30.852771+00:00", "user_id": "9105578047", "role": "CHANNEL_PARTNER", "query": "What is the apartment price?", "response_length": 151, "guardrail_triggered": true}
+{"id": 17, "timestamp": "2026-03-08T07:58:30.887019+00:00", "user_id": "9105578047", "role": "CHANNEL_PARTNER", "query": "Tell me about EMI options", "response_length": 151, "guardrail_triggered": true}
+{"id": 18, "timestamp": "2026-03-08T07:58:30.993780+00:00", "user_id": "6941460145", "role": "SITE_VISIT", "query": "Where is the project located?", "response_length": 284, "guardrail_triggered": false}
+{"id": 19, "timestamp": "2026-03-08T07:58:31.031251+00:00", "user_id": "6941460145", "role": "SITE_VISIT", "query": "What is the commission?", "response_length": 146, "guardrail_triggered": true}
+{"id": 20, "timestamp": "2026-03-08T07:58:31.069182+00:00", "user_id": "6682751893", "role": "UNKNOWN", "query": "I need help", "response_length": 267, "guardrail_triggered": false}
+{"id": 21, "timestamp": "2026-03-08T07:58:31.237547+00:00", "user_id": "7564209312", "role": "BUYER", "query": "What is the price?", "response_length": 411, "guardrail_triggered": false}
+{"id": 22, "timestamp": "2026-03-08T07:58:31.362308+00:00", "user_id": "7564209312", "role": "BUYER", "query": "EMI options?", "response_length": 135, "guardrail_triggered": false}
+{"id": 23, "timestamp": "2026-03-08T09:11:32.901931+00:00", "user_id": "6941460145", "role": "SITE_VISIT", "query": "Where is the site?", "response_length": 436, "guardrail_triggered": false}
+{"id": 24, "timestamp": "2026-03-08T09:11:42.341954+00:00", "user_id": "6941460145", "role": "SITE_VISIT", "query": "location of the site", "response_length": 439, "guardrail_triggered": false}
+{"id": 25, "timestamp": "2026-03-08T09:11:59.085346+00:00", "user_id": "6941460145", "role": "SITE_VISIT", "query": "what are the commission provided by them", "response_length": 146, "guardrail_triggered": true}
+{"id": 26, "timestamp": "2026-03-08T09:12:24.216516+00:00", "user_id": "6941460145", "role": "SITE_VISIT", "query": "what is the price provided by site", "response_length": 183, "guardrail_triggered": false}

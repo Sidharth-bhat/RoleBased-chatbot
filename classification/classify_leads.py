@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import re
+import os
 
 def clean_text(text):
     """Sanitize text by removing non-printable characters and extra whitespace"""
@@ -30,9 +31,13 @@ def main():
     }
     default_role = "UNKNOWN"
     
+    # Resolve paths relative to this file so the script works from any working directory
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    input_path = os.path.join(base_dir, 'data', 'leads_1000.csv')
+    output_path = os.path.join(base_dir, 'data', 'classified_leads.csv')
+
     # Load leads
-    # Using the file provided in context
-    df = pd.read_csv('data/leads_1000.csv') 
+    df = pd.read_csv(input_path)
     
     # Apply classification
     df['Role'] = df['Buyer/Channel Partner/Enquiry/Site Visit'].apply(
@@ -40,7 +45,7 @@ def main():
     )
     
     # Save classified leads
-    df.to_csv('data/classified_leads.csv', index=False)
+    df.to_csv(output_path, index=False)
     
     # Print statistics
     print("Classification Complete!")

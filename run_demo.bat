@@ -1,8 +1,9 @@
 @echo off
-echo Starting Role-Based Chatbot Demo...
+echo Starting Role-Based Chatbot (Full Stack)...
 echo.
-echo Opening browser at http://localhost:8501
+echo The server will be available at http://localhost:5000
 echo.
 echo Press Ctrl+C to stop the server
 echo.
-streamlit run streamlit_app.py
+cd chatbot
+python app.py

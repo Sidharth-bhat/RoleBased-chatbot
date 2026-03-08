@@ -5,9 +5,11 @@ SOLUTION_EXPLANATION.md
 SUBMISSION.md
 DEPLOYMENT.md
 
-# Assignment files
+# Assignment & large binary files
 Internship Assignment (1).pdf
 solutiondraft.docx
+role_based_chatbot_report.docx
+*.docx
 
 # Python
 __pycache__/
@@ -17,7 +19,16 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 *.egg-info/
+.pytest_cache/
+*.egg
+dist/
+build/
+
+# Environment / secrets
+.env
+.env.*
 
 # IDE
 .vscode/

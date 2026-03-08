@@ -1,117 +1,81 @@
 # Role-Based Chatbot System
 
-Enterprise role-based automation and chatbot with strict knowledge isolation.
+Enterprise role-based chatbot with strict knowledge isolation, JWT authentication, semantic search (RAG), and output guardrails.
 
 ## Features
 
-- **Auto-Classification**: XLOOKUP-based lead classification
-- **Multi-Agent System**: Physical knowledge base isolation
-- **JWT Authentication**: Secure role-based routing
-- **Output Guardrails**: Prevents cross-role data leakage
-- **Audit Logging**: Immutable compliance trail
+- **Auto-Classification** — maps raw leads CSV to roles (BUYER / CHANNEL_PARTNER / SITE_VISIT / UNKNOWN)
+- **Multi-Agent System** — physically isolated knowledge bases per role
+- **JWT Authentication** — secure, stateless role-based routing
+- **Output Guardrails** — keyword-level cross-role data leakage prevention
+- **Audit Logging** — immutable compliance trail per interaction
+- **Full-Stack UI** — premium dark-mode chat interface served directly by Flask
+
+## Stack
+
+| Layer     | Technology                     |
+|-----------|--------------------------------|
+| Backend   | Python · Flask · Flask-CORS    |
+| Auth      | PyJWT (HS256)                  |
+| AI / RAG  | sentence-transformers (MiniLM) |
+| Frontend  | HTML · Vanilla CSS · Vanilla JS|
+| Data      | pandas · CSV                   |
 
 ## Quick Start
 
 ```bash
-# Install dependencies
-pip install pandas PyJWT streamlit
+# 1. Install dependencies
+pip install -r requirements.txt
 
-# Classify leads
+# 2. Classify leads (generates data/classified_leads.csv)
 python classification/classify_leads.py
 
-# Run web demo
-streamlit run streamlit_app.py
+# 3. Run the server
+python chatbot/app.py
 ```
 
-## Demo
+Then open **http://localhost:5000** in your browser.
 
-Test with these phone numbers:
-- `7564209312` - BUYER
-- `9105578047` - CHANNEL_PARTNER
-- `6941460145` - SITE_VISIT
-- `6682751893` - UNKNOWN
+## Demo Accounts
+
+| Role             | Phone        |
+|------------------|--------------|
+| Buyer            | `7564209312` |
+| Channel Partner  | `9105578047` |
+| Site Visit       | `6941460145` |
+| Unknown          | `6682751893` |
+
+## API Endpoints
+
+| Method | Endpoint      | Description                      |
+|--------|---------------|----------------------------------|
+| POST   | `/api/login`  | Authenticate → get JWT token     |
+| POST   | `/api/chat`   | Send message (Bearer token auth) |
+| GET    | `/api/audit`  | Fetch last 50 audit log entries  |
+| GET    | `/api/status` | Health check                     |
 
 ## Architecture
 
 ```
-User Login → JWT Token → API Gateway → Role-Based Agent → Isolated KB → Guardrails → Response
+User Login → JWT Token → API Gateway (ChatbotRouter)
+                              │
+               ┌──────────────┼──────────────┬──────────────┐
+               ↓              ↓              ↓              ↓
+          BuyerAgent    PartnerAgent   VisitorAgent   FallbackAgent
+          buyer_kb.json partner_kb.json visitor_kb.json  (no KB)
+               └──────────────┴──────────────┴──────────────┘
+                                     │
+                           Output Guardrails
+                                     │
+                            Audit Log Entry
+                                     │
+                             Response to User
 ```
-## System Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     RAW LEAD SOURCES                            │
-│              (CSV, Web Forms, CRM Systems)                      │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-                         ↓
-┌─────────────────────────────────────────────────────────────────┐
-│              CLASSIFICATION ENGINE                              │
-│  • Data Sanitization (CLEAN, TRIM)                             │
-│  • Mapping Table Lookup (XLOOKUP)                              │
-│  • Role Assignment (BUYER/PARTNER/VISITOR/UNKNOWN)             │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-                         ↓
-┌─────────────────────────────────────────────────────────────────┐
-│                 CENTRAL USER DATABASE                           │
-│            (Stores: User ID, Name, Phone, Role)                │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-                         ↓
-┌─────────────────────────────────────────────────────────────────┐
-│              IDENTITY PROVIDER (JWT Generator)                  │
-│         Generates Token: {user_id, role, expiry}               │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-                         ↓
-┌─────────────────────────────────────────────────────────────────┐
-│                   API GATEWAY / ROUTER                          │
-│  • Validates JWT Signature                                     │
-│  • Extracts Role Claim                                         │
-│  • Deterministic Network Routing                               │
-└──────┬──────────────┬──────────────┬──────────────┬────────────┘
-       │              │              │              │
-       ↓              ↓              ↓              ↓
-┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
-│  BUYER   │   │ PARTNER  │   │ VISITOR  │   │ FALLBACK │
-│  AGENT   │   │  AGENT   │   │  AGENT   │   │  AGENT   │
-│ (LLM-A)  │   │ (LLM-B)  │   │ (LLM-C)  │   │ (No LLM) │
-└────┬─────┘   └────┬─────┘   └────┬─────┘   └────┬─────┘
-     │              │              │              │
-     ↓              ↓              ↓              ↓
-┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
-│ BUYER KB │   │PARTNER KB│   │VISITOR KB│   │  NO KB   │
-│ • Pricing│   │•Commission│   │•Location │   │  ACCESS  │
-│ • EMI    │   │•Referrals│   │•Schedule │   │          │
-│ • Booking│   │•Terms    │   │•Directions│   │          │
-└──────────┘   └──────────┘   └──────────┘   └──────────┘
-       │              │              │              │
-       └──────────────┴──────────────┴──────────────┘
-                         │
-                         ↓
-┌─────────────────────────────────────────────────────────────────┐
-│            OUTPUT GUARDRAIL EVALUATOR                           │
-│  • Keyword Filtering (commission, pricing, etc.)               │
-│  • LLM-as-a-Judge Validation                                   │
-│  • Block & Log Security Events                                 │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-                         ↓
-┌─────────────────────────────────────────────────────────────────┐
-│              IMMUTABLE AUDIT LOGGING                            │
-│  • Timestamp, User, Role, Query, Response                      │
-│  • JWT Claims, Agent Used                                      │
-│  • Compliance & Forensic Trail                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
 
 ## Security
 
 ✅ Zero cross-role data leakage  
-✅ Physical database isolation  
-✅ Network-level routing  
-✅ Output guardrails  
-✅ Audit logging
+✅ Physical knowledge base isolation  
+✅ JWT-based stateless authentication  
+✅ Input + output guardrails  
+✅ Immutable audit logging  
